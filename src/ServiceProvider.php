@@ -3,6 +3,7 @@
 namespace Studio1902\PeakTools;
 
 use Illuminate\Support\Facades\View;
+use Statamic\Facades\Form;
 use Statamic\Statamic;
 use Statamic\Events\GlobalVariablesSaved;
 use Statamic\Facades\GlobalSet;
@@ -59,8 +60,11 @@ class ServiceProvider extends AddonServiceProvider
 
     public function bootAddon()
     {
-        $this->registerPublishableFieldsets();
-        $this->registerPublishableViews();
+        $this
+            ->registerPublishableFieldsets()
+            ->registerPublishableViews()
+            ->bootFormConfigFields();
+
         $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'statamic-peak-tools');
 
         // Provide custom field conditions global tracker data to hide/show the event field in the button partial.
@@ -76,17 +80,35 @@ class ServiceProvider extends AddonServiceProvider
         });
     }
 
-    protected function registerPublishableFieldsets()
+    protected function registerPublishableFieldsets(): static
     {
         $this->publishes([
             __DIR__ . '/../resources/fieldsets' => resource_path('fieldsets/vendor/statamic-peak-tools'),
         ], 'statamic-peak-tools-fieldsets');
+
+        return $this;
     }
 
-    protected function registerPublishableViews()
+    protected function registerPublishableViews(): static
     {
         $this->publishes([
             __DIR__ . '/../resources/views' => resource_path('views/vendor/statamic-peak-tools'),
         ], 'statamic-peak-tools-views');
+
+        return $this;
+    }
+
+    protected function bootFormConfigFields(): static
+    {
+        Form::appendConfigFields('*', 'Fields', [
+            'success_message' => [
+                'type' => 'textarea',
+                'display' => __('Success message'),
+                'instructions' => __('The message that is shown after a successful submission.'),
+                'required' => true,
+            ]
+        ]);
+
+        return $this;
     }
 }
