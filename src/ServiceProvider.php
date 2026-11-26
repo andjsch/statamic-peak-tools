@@ -8,6 +8,7 @@ use Statamic\Statamic;
 use Statamic\Events\GlobalVariablesSaved;
 use Statamic\Facades\GlobalSet;
 use Statamic\Providers\AddonServiceProvider;
+use Studio1902\PeakTools\FormConnectors\PeakEmail;
 use Studio1902\PeakTools\Widgets\ImagesMissingAlt;
 use Studio1902\PeakTools\Listeners\GenerateFavicons;
 use Studio1902\PeakTools\Listeners\UpdateImagesMissingAltCacheListener;
@@ -35,6 +36,10 @@ class ServiceProvider extends AddonServiceProvider
 
     protected $widgets = [
         ImagesMissingAlt::class
+    ];
+
+    protected $formConnectors = [
+        PeakEmail::class,
     ];
 
     protected $updateScripts = [
